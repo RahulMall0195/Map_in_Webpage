@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Planner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .response {
+            margin-top: 20px;
+        }
+
+        .response pre {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Route Planner</h1>
+    
+    <div class="form-group">
+        <label for="origin">Origin (Lat, Lng)</label>
+        <input type="text" id="origin" placeholder="Enter origin coordinates (e.g., 37.420761, -122.081356)">
+    </div>
+
+    <div class="form-group">
+        <label for="destination">Destination (Lat, Lng)</label>
+        <input type="text" id="destination" placeholder="Enter destination coordinates (e.g., 37.420999, -122.086894)">
+    </div>
+
+    <button id="computeRoutesBtn">Compute Routes</button>
+
+    <div class="response">
+        <h2>Route Response</h2>
+        <pre id="routeResponse">Click 'Compute Routes' to see the response here...</pre>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    var apiKey = 'INSERT_API_KEY_HERE'; // Replace with your actual API key
+
+    // Function to compute routes
+    function computeRoutes(origin, destination) {
+        var requestUrl = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${apiKey}`;
+
+        console.log("Sending request:", requestUrl);
+
+        $.ajax({
+            url: requestUrl,
+            method: 'GET',
+            success: function(response) {
+                console.log("Response:", response);
+                $('#routeResponse').text(JSON.stringify(response, null, 2));
+            },
+            error: function(xhr, status, error) {
+                console.error("RPC failed:", error);
+                $('#routeResponse').text("Failed to fetch the routes. Error: " + error);
+            }
+        });
+    }
+
+    // Handle click event for 'Compute Routes' button
+    $('#computeRoutesBtn').on('click', function() {
+        var origin = $('#origin').val();
+        var destination = $('#destination').val();
+
+        if (origin && destination) {
+            computeRoutes(origin, destination);
+        } else {
+            alert("Please enter valid coordinates for both origin and destination.");
+        }
+    });
+});
+</script>
+
+</body>
+</html>
